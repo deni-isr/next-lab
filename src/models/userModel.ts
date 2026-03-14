@@ -1,34 +1,34 @@
-import pool from '@/lib/db';
-import { RowDataPacket } from 'mysql2';
-import { UserWithNoPassword, User } from 'hybrid-types';
+import client from '@/lib/db';
+import { User, UserWithNoPassword } from 'hybrid-types';
 
-export const getUserByUsername = async (
-  username: string
-): Promise<User | null> => {
+export const getUserByUsername = async (username: string): Promise<User | null> => {
   try {
-    const [rows] = await pool.execute<User[] & RowDataPacket[]>(
-      'SELECT * FROM Users WHERE username = ?',
-      [username]
-    );
-    if (rows.length === 0) {
-      return null;
-    }
-    return rows[0];
+    const result = await client.execute({
+      sql: 'SELECT * FROM Users WHERE username = ?',
+      args: [username]
+    });
+
+    if (result.rows.length === 0) return null;
+    
+    return result.rows[0] as unknown as User;
   } catch (e) {
-    console.error('getUserByUsername error', (e as Error).message);
+    console.error(e);
     return null;
   }
 };
 
 export const getUserById = async (id: number): Promise<UserWithNoPassword | null> => {
   try {
-    const [rows] = await pool.execute<UserWithNoPassword[] & RowDataPacket[]>(
-      'SELECT user_id, username, email, created_at FROM Users WHERE user_id = ?',
-      [id]
-    );
-    return rows.length > 0 ? rows[0] : null;
+    const result = await client.execute({
+      sql: 'SELECT user_id, username, email, created_at FROM Users WHERE user_id = ?',
+      args: [id]
+    });
+    
+    if (result.rows.length === 0) return null;
+    
+    return result.rows[0] as unknown as UserWithNoPassword;
   } catch (e) {
-    console.error('getUserById error', (e as Error).message);
+    console.error(e);
     return null;
   }
 };
