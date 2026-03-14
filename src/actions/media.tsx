@@ -1,0 +1,90 @@
+'use server';
+
+import { postMedia, deleteMedia, fetchAllMedia } from '@/models/mediaModel';
+import { postTag } from '@/models/tagModel';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import jwt from 'jsonwebtoken';
+import MediaCard from '@/components/MediaCard';
+
+export async function uploadMedia(formData: FormData) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('session')?.value;
+
+  if (!token) {
+    return { error: 'Sinun täytyy kirjautua sisään' };
+  }
+
+  try {
+    const uploadResponse = await fetch(process.env.UPLOAD_SERVER + '/upload', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+      body: formData,
+    });
+
+    const uploadResult = await uploadResponse.json();
+
+    if (!uploadResponse.ok) {
+      return { error: uploadResult.message || 'Upload failed' };
+    }
+
+    const { filename, filesize, media_type } = uploadResult.data;
+    const title = formData.get('title') as string;
+    const description = formData.get('description') as string;
+
+    const secret = process.env.JWT_SECRET || '';
+    const decoded = jwt.verify(token, secret) as { user_id: number };
+
+    const newMediaId = await postMedia({
+      user_id: decoded.user_id,
+      filename,
+      filesize,
+      media_type,
+      title,
+      description,
+    });
+
+    const tag = formData.get('tag') as string;
+    if (newMediaId && tag) {
+      await postTag(tag, newMediaId);
+    }
+
+  } catch (e) {
+    console.error(e);
+    return { error: 'Palvelinvirhe latauksessa' };
+  }
+
+  redirect('/');
+}
+
+export async function deleteMediaAction(media_id: number) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('session')?.value;
+
+  if (!token) return { error: 'Kirjaudu sisään ensin' };
+
+  try {
+    const secret = process.env.JWT_SECRET || '';
+    const decoded = jwt.verify(token, secret) as { user_id: number };
+
+    const success = await deleteMedia(media_id, decoded.user_id);
+    
+    if (!success) {
+      return { error: 'Poisto epäonnistui' };
+    }
+  } catch (e) {
+    console.error(e);
+    return { error: 'Virhe poistettaessa' };
+  }
+
+  redirect('/');
+}
+
+export async function fetchNextPage(page: number) {
+  const items = await fetchAllMedia(page, 6);
+  if (!items || items.length === 0) return null;
+
+  return items.map((item) => <MediaCard key={item.media_id} item={item} />);
+}
