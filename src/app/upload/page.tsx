@@ -19,13 +19,13 @@ export default function UploadPage() {
         }} className="space-y-5">
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Otsikko (Title)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Otsikko </label>
             <input name="title" type="text" required placeholder="Hieno kuva"
               className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Kuvaus (Description)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Kuvaus </label>
             <textarea name="description" required placeholder="Kerro jotain kuvasta..."
               className="w-full p-2 border rounded-lg h-24 focus:ring-2 focus:ring-teal-500 outline-none" />
           </div>
@@ -38,7 +38,7 @@ export default function UploadPage() {
 
           {}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tägi (Tag)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tägi</label>
             <input name="tag" type="text" placeholder="esim. kissa, maisema"
               className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-500 outline-none" />
           </div>

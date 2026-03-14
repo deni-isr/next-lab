@@ -11,12 +11,12 @@ export async function loginUser(formData: FormData) {
   const password = formData.get('password') as string;
 
   if (!username || !password) {
-    return { error: 'Käyttäjätunnus ja salasana vaaditaan (Введите логин и пароль)' };
+    return { error: 'Käyttäjätunnus ja salasana vaaditaan' };
   }
 
   const user = await getUserByUsername(username);
   if (!user) {
-    return { error: 'Käyttäjää ei löytynyt (Пользователь не найден)' };
+    return { error: 'Käyttäjää ei löytynyt' };
   }
 
   const isValid = await bcrypt.compare(password, user.password);

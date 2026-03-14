@@ -43,7 +43,7 @@ export default async function ProfilePage() {
         {}
         <form action={logoutUser}>
           <button type="submit" className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 rounded-lg transition">
-            Kirjaudu ulos (Logout)
+            Kirjaudu ulos
           </button>
         </form>
       </div>

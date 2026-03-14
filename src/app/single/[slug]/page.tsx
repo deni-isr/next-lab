@@ -51,7 +51,7 @@ export default async function SingleMediaPage({ params }: Props) {
     <main className="p-8 max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <Link href="/" className="bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600 transition">
-          &larr; Takaisin listaan (Back)
+          &larr; Takaisin listaan
         </Link>
 
         {currentUserId === mediaItem.user_id && (
@@ -60,7 +60,7 @@ export default async function SingleMediaPage({ params }: Props) {
             await deleteMediaAction(mediaItem.media_id);
           }}>
             <button type="submit" className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md font-bold">
-              Poista (Delete)
+              Poista
             </button>
           </form>
         )}
@@ -89,7 +89,7 @@ export default async function SingleMediaPage({ params }: Props) {
       </div>
 
       <div className="mt-8 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <h3 className="text-lg font-bold text-gray-500 uppercase tracking-wider mb-2">Kuvaus (Description)</h3>
+        <h3 className="text-lg font-bold text-gray-500 uppercase tracking-wider mb-2">Kuvaus</h3>
         <p className="text-xl text-gray-800 leading-relaxed">{displayDescription}</p>
         
         <div className="mt-6 pt-6 border-t border-gray-100 flex justify-between text-sm text-gray-400">
