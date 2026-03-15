@@ -22,7 +22,6 @@ export async function registerAction(formData: FormData) {
       username, 
       email, 
       password: hashedPassword
-
     });
 
     if (!result) return;
@@ -53,8 +52,8 @@ export async function loginAction(formData: FormData) {
     }
 
     const token = jwt.sign(
-    { user_id: user.user_id, username: user.username },
-    process.env.JWT_SECRET || 'default_secret'
+      { user_id: user.user_id, username: user.username },
+      process.env.JWT_SECRET || 'default_secret'
     );
 
     const cookieStore = await cookies();

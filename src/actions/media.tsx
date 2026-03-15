@@ -16,7 +16,10 @@ export async function uploadMedia(formData: FormData) {
   }
 
   try {
-    const uploadResponse = await fetch(process.env.UPLOAD_SERVER + '/upload', {
+    // Жестко задаем ссылку на случай, если Vercel "забудет" переменную
+    const uploadServerUrl = process.env.UPLOAD_SERVER || 'https://media2.edu.metropolia.fi/upload-api/api/v1';
+    
+    const uploadResponse = await fetch(uploadServerUrl + '/upload', {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
@@ -25,6 +28,9 @@ export async function uploadMedia(formData: FormData) {
     });
 
     const uploadResult = await uploadResponse.json();
+    
+    // Логируем ответ, чтобы видеть его в Vercel Logs, если что-то пойдет не так
+    console.log('Upload server response:', uploadResult);
 
     if (!uploadResponse.ok) {
       return { error: uploadResult.message || 'Upload failed' };
@@ -34,7 +40,7 @@ export async function uploadMedia(formData: FormData) {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
 
-    const secret = process.env.JWT_SECRET || '';
+    const secret = process.env.JWT_SECRET || 'default_secret';
     const decoded = jwt.verify(token, secret) as { user_id: number };
 
     const newMediaId = await postMedia({
@@ -52,7 +58,7 @@ export async function uploadMedia(formData: FormData) {
     }
 
   } catch (e) {
-    console.error(e);
+    console.error('Lataus virhe:', e);
     return { error: 'Palvelinvirhe latauksessa' };
   }
 
@@ -66,7 +72,7 @@ export async function deleteMediaAction(media_id: number) {
   if (!token) return { error: 'Kirjaudu sisään ensin' };
 
   try {
-    const secret = process.env.JWT_SECRET || '';
+    const secret = process.env.JWT_SECRET || 'default_secret';
     const decoded = jwt.verify(token, secret) as { user_id: number };
 
     const success = await deleteMedia(media_id, decoded.user_id);
