@@ -21,8 +21,7 @@ export async function registerAction(formData: FormData) {
     const result = await postUser({ 
       username, 
       email, 
-      password: hashedPassword,
-      user_level_id: 2 
+      password: hashedPassword
     });
 
     if (!result) return;

@@ -33,11 +33,11 @@ export const getUserById = async (id: number): Promise<UserWithNoPassword | null
   }
 };
 
-export const postUser = async (user: Omit<User, 'user_id' | 'created_at'>) => {
+export const postUser = async (user: Omit<User, 'user_id' | 'created_at' | 'user_level_id'>) => {
   try {
     const result = await client.execute({
-      sql: 'INSERT INTO Users (username, password, email, user_level_id) VALUES (?, ?, ?, ?)',
-      args: [user.username, user.password, user.email, user.user_level_id]
+      sql: 'INSERT INTO Users (username, password, email) VALUES (?, ?, ?)',
+      args: [user.username, user.password, user.email]
     });
     return result;
   } catch (e) {
