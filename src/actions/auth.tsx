@@ -22,6 +22,7 @@ export async function registerAction(formData: FormData) {
       username, 
       email, 
       password: hashedPassword
+
     });
 
     if (!result) return;
